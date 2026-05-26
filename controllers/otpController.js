@@ -18,8 +18,13 @@ const sendOtp = async (req, res) => {
         }
 
         const otp = await OtpService.createAndStoreOtp(email, type);
-        await sendOtpEmail(email, otp, type);
 
+        // 🔥 "Fire and Forget" - Sends email in the background to prevent API lag
+        sendOtpEmail(email, otp, type).catch(err => {
+            console.error(`[Background Task] Failed to send email to ${email}:`, err);
+        });
+
+        // The user receives this response instantly
         return res.status(200).json({ 
             success: true, 
             message: 'OTP sent successfully to your email.' 
