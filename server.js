@@ -8,6 +8,9 @@ const otpRoutes = require('./routes/otpRoutes');
 
 const app = express();
 
+// Trust the reverse proxy (Render) to correctly resolve the user's IP for rate limiting
+app.set('trust proxy', 1);
+
 // Security Middleware
 app.use(helmet());
 app.use(cors({
